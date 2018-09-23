@@ -6,6 +6,9 @@ Copyright (c) 2018 Matt Tropiano. All rights reserved.
 
 This README's Documentation is totally incomplete. Sorry.
 
+Before a "v1.0" is set, the contents of this API is subject to change between commits. Use caution!
+
+
 ## Introduction
 
 DOMBlaster is a minimal, jQuery-like library for browser JavaScript for DOM querying and manipulation.
@@ -29,7 +32,25 @@ DOMBlaster's inclusion with:
 
 ## Documentation
 
+Parameters enclosed in `[]` are optional.
+
 ### Main Calls
+
+#### DOMBlaster ( selector, [one] )
+
+#### DOMBlaster.selectIn ( document, selector, [one] )
+
+#### DOMBlaster.id ( id )
+
+#### DOMBlaster.tag ( tag )
+
+#### DOMBlaster.name ( name )
+
+#### DOMBlaster.className ( className )
+
+#### DOMBlaster.extend ( name, function )
+
+#### DOMBlaster.extendAll ( name, object )
 
 #### DOMBlaster.noConflict ( )
 

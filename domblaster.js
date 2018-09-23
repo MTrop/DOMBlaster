@@ -120,51 +120,52 @@
 	
 	/*** Main Object ***/
 	
-	let _DOMBlasterGroup = function(elementList)
+	let DOMBlasterGroup = function(elementList)
 	{
-		this.selection = elementList;
+		// convert Array-like to array - certain collections have iterator problems
+		this.selection = Array.from(elementList);
 	};
 
 	let DOMBlasterSelect = function(selector, one)
 	{
 		let doc = _CTX.document;
-		let nt = Util.nanoTime();
-		let dbgOut = null;
-
 		if (Util.isUndefined(selector) || Util.isNull(selector))
-			dbgOut = new _DOMBlasterGroup([]);
+			return new DOMBlasterGroup([]);
 		// single element
 		else if (selector instanceof Element)
-			dbgOut = new _DOMBlasterGroup([selector]);
+			return new DOMBlasterGroup([selector]);
 		// array of elements
 		else if (Util.isArray(selector))
-			dbgOut = new _DOMBlasterGroup(selector);
+			return new DOMBlasterGroup(selector);
 		else if (selector instanceof HTMLCollection)
-			dbgOut = new _DOMBlasterGroup(selector);
+			return new DOMBlasterGroup(selector);
 		// CSS selector string
 		else if (Util.isString(selector))
 		{
 			// if blank.
 			if (!selector.trim().length)
-				dbgOut = new _DOMBlasterGroup([]);
+				return new DOMBlasterGroup([]);
 			else
-				dbgOut = new _DOMBlasterGroup(one ? doc.querySelector(selector) : doc.querySelectorAll(selector));
+			{
+				if (one)
+				{
+					let e = doc.querySelector(selector);
+					return new DOMBlasterGroup(e ? [e] : []);
+				}
+				else
+					return new DOMBlasterGroup(doc.querySelectorAll(selector));
+			}
 		}
-		
-		dbgOut.time = Util.nanoTime() - nt;
-		return dbgOut;
+		return null;
 	};
 
 	let DOMBlasterEXT = function(name, func)
 	{
-		_DOMBlasterGroup.prototype[name] = function() {
-			let args = arguments;
+		DOMBlasterGroup.prototype[name] = function() {
 			let retval;
-			Util.each(this.selection, function(elem){
-				retval = func.apply(elem, args);
-				if ((typeof retval) !== 'undefined')
-					return true; // break each
-			});
+			let args = arguments;
+			for (let i = 0; i < this.selection.length && (typeof retval) === 'undefined'; i++)
+				retval = func.apply(this.selection[i], args);
 			return (typeof retval) === 'undefined' ? this : retval;
 		};
 	};
@@ -177,7 +178,7 @@
 	 *		(string) CSS selector string.
 	 *		(Element) wraps an element in a group.
 	 * @param one (boolean) OPTIONAL: if true, only select first result.
-	 * @return (_DOMBlasterGroup) query result.
+	 * @return (DOMBlasterGroup) query result.
 	 */
 	_CTX.DOMBlaster = new function() {
 		return DOMBlasterSelect;
@@ -199,14 +200,11 @@
 	 */
 	_CTX.DOMBlaster.selectIn = function(doc, selector, one)
 	{
-		let nt = Util.nanoTime();
 		// if blank.
 		if (!selector.trim().length)
-			dbgOut = new _DOMBlasterGroup([]);
+			return new DOMBlasterGroup([]);
 		else
-			dbgOut = new _DOMBlasterGroup(one ? doc.querySelector(selector) : doc.querySelectorAll(selector));
-		dbgOut.time = Util.nanoTime() - nt;
-		return dbgOut;
+			return new DOMBlasterGroup(one ? doc.querySelector(selector) : doc.querySelectorAll(selector));
 	};
 
 	/**
@@ -216,7 +214,7 @@
 	 */
 	_CTX.DOMBlaster.id = function(s)
 	{
-		return new _DOMBlasterGroup(_CTX.document.getElementById(s));
+		return new DOMBlasterGroup(_CTX.document.getElementById(s));
 	};
 
 	/**
@@ -226,7 +224,7 @@
 	 */
 	_CTX.DOMBlaster.name = function(n)
 	{
-		return new _DOMBlasterGroup(_CTX.document.getElementByName(n));
+		return new DOMBlasterGroup(_CTX.document.getElementByName(n));
 	};
 
 	/**
@@ -236,7 +234,7 @@
 	 */
 	_CTX.DOMBlaster.tag = function(t)
 	{
-		return new _DOMBlasterGroup(_CTX.document.getElementsByTagName(t));
+		return new DOMBlasterGroup(_CTX.document.getElementsByTagName(t));
 	};
 
 	/**
@@ -246,7 +244,7 @@
 	 */
 	_CTX.DOMBlaster.className = function(c)
 	{
-		return new _DOMBlasterGroup(_CTX.document.getElementsByClassName(s));
+		return new DOMBlasterGroup(_CTX.document.getElementsByClassName(c));
 	};
 	
 	/**
@@ -280,7 +278,7 @@
 
 	/******** Built in group functions. ********/
 	
-	_DOMBlasterGroup.prototype['get'] = function(index) {
+	DOMBlasterGroup.prototype['get'] = function(index) {
 		return DOMBlaster(this.selection[index]);
 	};
 	

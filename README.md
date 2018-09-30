@@ -38,8 +38,6 @@ Parameters enclosed in `[]` are optional.
 
 #### DOMBlaster ( selector, [one] )
 
-#### DOMBlaster.selectIn ( document, selector, [one] )
-
 #### DOMBlaster.id ( id )
 
 #### DOMBlaster.tag ( tag )
@@ -50,11 +48,24 @@ Parameters enclosed in `[]` are optional.
 
 #### DOMBlaster.extend ( name, function )
 
-#### DOMBlaster.extendAll ( name, object )
+#### DOMBlaster.extendGroup ( name, function )
 
 #### DOMBlaster.noConflict ( )
 
 Restores the previous assigning of `$D` on the global context.
+
+
+### DOMBlasterGroup Prototype
+
+#### .select ( selector )
+
+#### .each ( function )
+
+#### .get ( index )
+
+#### .gather ( function )
+
+#### .matches ( selector )
 
 
 ### Utility
@@ -87,6 +98,7 @@ Restores the previous assigning of `$D` on the global context.
 
 #### DOMBlaster.nanoTime ( )
 
+#### DOMBlaster.matches ( elem, selector )
 
 ## Licensing
 

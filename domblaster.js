@@ -118,6 +118,18 @@
 		}
 	})();
 	
+	// Matches() polyfill.
+	let elemMatches = (
+		Element.prototype.matches ||
+		Element.prototype.matchesSelector || 
+		Element.prototype.msMatchesSelector || 
+		Element.prototype.webkitMatchesSelector
+	);
+	
+	Util.matches = function(elem, selector){
+		return elemMatches.call(elem, selector);
+	};
+	
 	/*** Main Object ***/
 	
 	let DOMBlasterGroup = function(elementList)
@@ -134,10 +146,13 @@
 		// single element
 		else if (selector instanceof Element)
 			return new DOMBlasterGroup([selector]);
-		// array of elements
-		else if (Util.isArray(selector))
+		// list of elements
+		else if (selector instanceof NodeList)
 			return new DOMBlasterGroup(selector);
 		else if (selector instanceof HTMLCollection)
+			return new DOMBlasterGroup(selector);
+		// array of elements
+		else if (Util.isArray(selector))
 			return new DOMBlasterGroup(selector);
 		// CSS selector string
 		else if (Util.isString(selector))
@@ -169,6 +184,13 @@
 			return (typeof retval) === 'undefined' ? this : retval;
 		};
 	};
+
+	let DOMBlasterProtoEXT = function(name, func)
+	{
+		DOMBlasterGroup.prototype[name] = function() {
+			return func.apply(this, arguments);
+		};
+	};
 	
 	/*** Public API ***/
 
@@ -192,29 +214,13 @@
 	});
 
 	/**
-	 * Selects an element in a Document.
-	 * @param doc (Document) the document to select inside.
-	 * @param selector (string) the CSS selector string.
-	 * @param one (string) the CSS selector string.
-	 * @return the corresponding element or null if not found.
-	 */
-	_CTX.DOMBlaster.selectIn = function(doc, selector, one)
-	{
-		// if blank.
-		if (!selector.trim().length)
-			return new DOMBlasterGroup([]);
-		else
-			return new DOMBlasterGroup(one ? doc.querySelector(selector) : doc.querySelectorAll(selector));
-	};
-
-	/**
 	 * Gets an element by id.
-	 * @param s (string) the id.
+	 * @param id (string) the id.
 	 * @return the corresponding element or null if not found.
 	 */
-	_CTX.DOMBlaster.id = function(s)
+	_CTX.DOMBlaster.id = function(id)
 	{
-		return new DOMBlasterGroup(_CTX.document.getElementById(s));
+		return new DOMBlasterGroup([_CTX.document.getElementById(id)]);
 	};
 
 	/**
@@ -248,39 +254,88 @@
 	};
 	
 	/**
-	 * Extend DOMBlaster.
+	 * Extends DOMBlaster's selection group prototype.
+	 * @param name (string) function name.
+	 * @param func (Function) the function to call. The selection group is passed as 'this'. Arguments are kept.
+	 */
+	_CTX.DOMBlaster.extendGroup = DOMBlasterProtoEXT;
+
+	/**
+	 * Extends DOMBlaster's selection applier.
 	 * If the function to use as an extension does not return anything, the call will return
 	 * the element group for chaining.
 	 * @param name (string) function name.
-	 * @param func (Function) a function that is passed in the element to action on as THIS. Arguments are kept.
+	 * @param func (Function) a function that is passed in the element to action on as 'this'. Arguments are kept.
 	 */
 	_CTX.DOMBlaster.extend = DOMBlasterEXT;
 
 	/**
-	 * Extend DOMBlaster using a group of functions.
-	 * If each function to use as an extension does not return anything, the call will return
-	 * the element group for chaining.
-	 * @param funcObject (Object) function name to function mapping: 
-	 *		{name: (Function(TOOLKIT)) a function that is passed in the TOOLKIT, must return a function to attach.}.
-	 */
-	_CTX.DOMBlaster.extendAll = function(funcObject) {
-		Util.each(funcObject, (func, name) => {
-			DOMBlasterEXT(name, func);
-		});
-	};
-
-	/**
-	 * Restore the previous assigning of $D on the context.
+	 * Restores the previous assigning of $D on the context.
 	 */
 	_CTX.DOMBlaster.noConflict = function() {
 		_CTX.$D = CURRENTDOM;
 	};
 
+	/** Mapping of extensions present (for querying by other major extensions). */
+	_CTX.DOMBlaster.extensions = {};
+
+	
 	/******** Built in group functions. ********/
 	
-	DOMBlasterGroup.prototype['get'] = function(index) {
+	/**
+	 * Calls a function for each object in the selection group.
+	 * @param func (Function) a function to call per object in the group. The 'this' field is set to the object.
+	 */
+	DOMBlasterEXT('each', function(func) {
+		func.apply(this);
+	});
+
+	/**
+	 * Selects inside an element's descendants.
+	 * @return (HTMLDocument) the element's contents as a document object.
+	 */
+	DOMBlasterEXT('select', function(selector, one) {
+		if (one)
+		{
+			let e = this.querySelector(selector);
+			return new DOMBlasterGroup(e ? [e] : []);
+		}
+		else
+			return new DOMBlasterGroup(this.querySelectorAll(selector));
+	});
+
+	/**
+	 * Gets an element from the selection group wrapped in a new selection group.
+	 * @param index (Number) the index into the group.
+	 * @return (DOMBlasterGroup) a single element wrapped in a selection group.
+	 */
+	DOMBlasterProtoEXT('get', function(index) {
 		return DOMBlaster(this.selection[index]);
-	};
+	});
+
+	/**
+	 * Calls a function for each object in the selection group and gathers the returns into an array.
+	 * @param func (Function) a function to call per object in the group. The 'this' field is set to the object.
+	 * @return (Array) an accumulation of all of the returned values per object.
+	 */
+	DOMBlasterProtoEXT('gather', function(func) {
+		let out = [];
+		for (let i = 0; i < this.selection.length; i++)
+			out.push(func.apply(this.selection[i]));
+		return out;
+	});
 	
+	/**
+	 * Checks if all elements in the collection match a CSS selector.
+	 * @param selector (string) the selector.
+	 * @return (boolean) true if so, false if not.
+	 */
+	DOMBlasterProtoEXT('matches', function(selector) {
+		let out = true;
+		for (let i = 0; i < this.selection.length && out; i++)
+			out = out && Util.matches(this.selection[i], selector);
+		return out;
+	});
+
 })(this);
 var $D = $D || DOMBlaster;

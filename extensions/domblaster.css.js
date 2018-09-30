@@ -6,7 +6,9 @@
 
 if (!DOMBlaster)
 	console.error("DOMBlaster must be loaded first!");
- 
+
+DOMBlaster.extensions['css'] = true;
+
 /**
  * Adds a CSS class (or classes) to each element.
  * @param cnames (string) the single class to add.
@@ -128,13 +130,13 @@ DOMBlaster.extend('getClasses', function()
 });
 
 /**
- * Sets or gets a CSS style or value.
+ * Sets or gets CSS styles or values.
  * @param property
  *		if (string): property to use:
  *			if value is undefined, return value.
- *			else, set CSS property to value. No return.
+ *			else, set CSS property to value. No return (chaining).
  *		if (Array): treat as list of properties - return an object mapping of property to value.
- *		if (Object): treat as map of {property: value} and sets all of them. No return.
+ *		if (Object): treat as map of {property: value} and sets all of them. Undefined/null values remove the style. No return (chaining).
  * @return (varies)
  */
 DOMBlaster.extend('style', function(property, value)
@@ -152,6 +154,8 @@ DOMBlaster.extend('style', function(property, value)
 	else if (DOMBlaster.isObject(property))
 	{
 		DOMBlaster.each(property, (value, key)=>{
+			if (DOMBlaster.isUndefined(value) || DOMBlaster.isNull(value))
+
 			this.style[key] = value;
 		});
 	}
@@ -163,6 +167,7 @@ DOMBlaster.extend('style', function(property, value)
 	}
 	else
 		this.style[property] = value;
+	
 });
 
 /**

@@ -2,6 +2,7 @@
  * DOMBlaster by Matt Tropiano (C) 2018
  * Requires ECMAScript 6
  * Licensed for use under the MIT License
+ * @license
  ****************************************************************************/
 
 (function(_CTX)
@@ -310,7 +311,7 @@
 	 * @return (DOMBlasterGroup) a single element wrapped in a selection group.
 	 */
 	DOMBlasterProtoEXT('get', function(index) {
-		return DOMBlaster(this.selection[index]);
+		return new DOMBlasterGroup(this.selection[index]);
 	});
 
 	/**

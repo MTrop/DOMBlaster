@@ -2,13 +2,11 @@
  * DOMBlaster Form Extensions by Matt Tropiano (C) 2018
  * Requires ECMAScript 6
  * Licensed for use under the MIT License
+ * @license
  ****************************************************************************/
 
 if (!DOMBlaster)
 	console.error("DOMBlaster must be loaded first!");
-
-if (!DOMBlaster.extensions['dom'])
-	console.error("DOMBlaster DOM extensions must be loaded to include the Form Extensions!");
 
 DOMBlaster.extensions['forms'] = true;
 
@@ -43,15 +41,15 @@ DOMBlaster.extendGroup('formData', function(callback) {
 	{
 		let formData = {};
 		let dbForm = DOMBlaster(this);
-		let formId = dbForm.attrib('id') || ('form' + (f++));
+		let formId = this.getAttribute('id') || ('form' + (f++));
 
 		let FILLFUNC = function()
 		{
 			let dbt = DOMBlaster(this);
-			let memberName = dbt.attrib('name') || dbt.attrib('id');
+			let memberName = this.getAttribute('name') || this.getAttribute('id');
 			if (memberName)
 			{
-				if (!dbt.matches(':disabled') && (dbt.attrib('type') !== 'checkbox' || dbt.matches(':checked')))
+				if (!dbt.matches(':disabled') && (this.getAttribute('type') !== 'checkbox' || dbt.matches(':checked')))
 				{
 					if ('object' === typeof(formData[memberName]))
 					{

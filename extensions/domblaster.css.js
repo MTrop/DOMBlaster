@@ -2,6 +2,7 @@
  * DOMBlaster CSS Extensions by Matt Tropiano (C) 2018
  * Requires ECMAScript 6
  * Licensed for use under the MIT License
+ * @license
  ****************************************************************************/
 
 if (!DOMBlaster)

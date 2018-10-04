@@ -100,6 +100,13 @@ Restores the previous assigning of `$D` on the global context.
 
 #### DOMBlaster.matches ( elem, selector )
 
+#### DOMBlaster.addEvent ( elem, name, function, options )
+
+#### DOMBlaster.removeEvent ( elem, name, function, options )
+
+#### DOMBlaster.sendEvent ( elem, Event )
+
+
 ## Licensing
 
 This program and the accompanying materials are made available under the terms of the MIT License.

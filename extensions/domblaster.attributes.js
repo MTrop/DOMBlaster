@@ -1,5 +1,5 @@
 /****************************************************************************
- * DOMBlaster DOMM Attributes Extensions by Matt Tropiano (C) 2018
+ * DOMBlaster DOM Attributes Extensions by Matt Tropiano (C) 2018
  * Requires ECMAScript 6
  * Licensed for use under the MIT License
  * @license

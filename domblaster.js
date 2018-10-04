@@ -130,6 +130,56 @@
 	Util.matches = function(elem, selector){
 		return elemMatches.call(elem, selector);
 	};
+
+	// event() polyfill.
+	Util.addEvent = (function(){
+		if (Element.prototype.addEventListener) {
+			return function(elem, name, func, options) {
+				if (!Util.isNull(func))
+					elem.addEventListener(name, func, options);
+			};
+		} else if (Element.prototype.attachEvent) {
+			return function(elem, name, func, options) {
+				if (!Util.isNull(func))
+					elem.attachEvent('on' + name, func, options);
+			};
+		} else {
+			return function(elem, name, func) {
+				if (!Util.isNull(func))
+					elem['on'+name] = func;
+			};
+		}
+	})();
+
+	// removeEvent() polyfill.
+	Util.removeEvent = (function(){
+		if (Element.prototype.removeEventListener) {
+			return function(elem, name, func, options) {
+				elem.removeEventListener(name, func, options);
+			};
+		} else if (Element.prototype.detachEvent) {
+			return function(elem, name, func, options) {
+				elem.detachEvent('on' + name, func, options);
+			};
+		} else {
+			return function(elem, name, func) {
+				elem['on'+name] = null;
+			};
+		}
+	})();
+
+	// dispatchEvent() polyfill.
+	Util.dispatchEvent = (function(){
+		if (Element.prototype.dispatchEvent) {
+			return function(elem, event) {
+				elem.dispatchEvent(event);
+			};
+		} else if (Element.prototype.fireEvent) {
+			return function(elem, event) {
+				elem.fireEvent(event);
+			};
+		}
+	})();
 	
 	/*** Main Object ***/
 	

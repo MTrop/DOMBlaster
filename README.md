@@ -57,8 +57,6 @@ Restores the previous assigning of `$D` on the global context.
 
 ### DOMBlasterGroup Prototype
 
-#### .select ( selector )
-
 #### .each ( function )
 
 #### .get ( index )
@@ -66,6 +64,8 @@ Restores the previous assigning of `$D` on the global context.
 #### .gather ( function )
 
 #### .matches ( selector )
+
+#### .search ( selector )
 
 
 ### Utility
@@ -99,12 +99,6 @@ Restores the previous assigning of `$D` on the global context.
 #### DOMBlaster.nanoTime ( )
 
 #### DOMBlaster.matches ( elem, selector )
-
-#### DOMBlaster.addEvent ( elem, name, function, options )
-
-#### DOMBlaster.removeEvent ( elem, name, function, options )
-
-#### DOMBlaster.sendEvent ( elem, Event )
 
 
 ## Licensing

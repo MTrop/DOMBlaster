@@ -5,8 +5,8 @@
  * @license
  ****************************************************************************/
 
-(function(_CTX)
-{ 
+(function(_CTX){
+	 
 	/***** Test Browser Capabilities *****/
 	
 	if (!_CTX.document.querySelectorAll)
@@ -130,56 +130,6 @@
 	Util.matches = function(elem, selector){
 		return elemMatches.call(elem, selector);
 	};
-
-	// event() polyfill.
-	Util.addEvent = (function(){
-		if (Element.prototype.addEventListener) {
-			return function(elem, name, func, options) {
-				if (!Util.isNull(func))
-					elem.addEventListener(name, func, options);
-			};
-		} else if (Element.prototype.attachEvent) {
-			return function(elem, name, func, options) {
-				if (!Util.isNull(func))
-					elem.attachEvent('on' + name, func, options);
-			};
-		} else {
-			return function(elem, name, func) {
-				if (!Util.isNull(func))
-					elem['on'+name] = func;
-			};
-		}
-	})();
-
-	// removeEvent() polyfill.
-	Util.removeEvent = (function(){
-		if (Element.prototype.removeEventListener) {
-			return function(elem, name, func, options) {
-				elem.removeEventListener(name, func, options);
-			};
-		} else if (Element.prototype.detachEvent) {
-			return function(elem, name, func, options) {
-				elem.detachEvent('on' + name, func, options);
-			};
-		} else {
-			return function(elem, name, func) {
-				elem['on'+name] = null;
-			};
-		}
-	})();
-
-	// dispatchEvent() polyfill.
-	Util.dispatchEvent = (function(){
-		if (Element.prototype.dispatchEvent) {
-			return function(elem, event) {
-				elem.dispatchEvent(event);
-			};
-		} else if (Element.prototype.fireEvent) {
-			return function(elem, event) {
-				elem.fireEvent(event);
-			};
-		}
-	})();
 	
 	/*** Main Object ***/
 	
@@ -227,6 +177,9 @@
 
 	let DOMBlasterEXT = function(name, func)
 	{
+		if (DOMBlasterGroup.prototype[name])
+			console.warn("DOMBlaster: a script is replacing group extension '" + name + "'.");
+
 		DOMBlasterGroup.prototype[name] = function() {
 			let retval;
 			let args = arguments;
@@ -238,6 +191,9 @@
 
 	let DOMBlasterProtoEXT = function(name, func)
 	{
+		if (DOMBlasterGroup.prototype[name])
+			console.warn("DOMBlaster: a script is replacing group extension '" + name + "'.");
+
 		DOMBlasterGroup.prototype[name] = function() {
 			return func.apply(this, arguments);
 		};
@@ -327,7 +283,9 @@
 		_CTX.$D = CURRENTDOM;
 	};
 
-	/** Mapping of extensions present (for querying by other major extensions). */
+	/** 
+	 * Mapping of extensions present (for querying by other major extensions). 
+	 */
 	_CTX.DOMBlaster.extensions = {};
 
 	
@@ -345,7 +303,7 @@
 	 * Selects inside an element's descendants.
 	 * @return (HTMLDocument) the element's contents as a document object.
 	 */
-	DOMBlasterEXT('select', function(selector, one) {
+	DOMBlasterEXT('search', function(selector, one) {
 		if (one)
 		{
 			let e = this.querySelector(selector);

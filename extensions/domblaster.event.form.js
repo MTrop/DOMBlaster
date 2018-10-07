@@ -13,7 +13,7 @@
 		return;
 	}
 
-	if (!$D.extensions.event)
+	if (!$D.extensions['event'])
 	{
 		console.error("DOMBlaster Event Extensions must be loaded first!");
 		return;

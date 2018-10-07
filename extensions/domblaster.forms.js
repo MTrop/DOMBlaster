@@ -73,7 +73,7 @@
 				}
 			};
 
-			dbForm.select('input, textarea, select').each(FILLFUNC);
+			dbForm.search('input, textarea, select').each(FILLFUNC);
 			if (callback)
 				callback(formData);
 			else
@@ -142,7 +142,7 @@
 				}
 			};
 
-			dbForm.select('input, textarea, select').each(FILLFUNC);
+			dbForm.search('input, textarea, select').each(FILLFUNC);
 			if (callback)
 				callback(formData);
 			else

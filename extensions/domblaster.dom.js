@@ -125,4 +125,39 @@
 		return $D(this.parentElement);
 	});
 
+	/**
+	 * Sets the innerHTML on each element.
+	 * @param html the HTML to set. if not defined, this returns the innerHTML string.
+	 */
+	$D.extend('html', function(html) {
+		if ($D.isUndefined(html))
+			return this.innerHTML;
+		else
+			this.innerHTML = html;
+	});
+
+	const ENTITIES = {
+		'&': '&amp;',
+		'<': '&lt;',
+		'>': '&gt;',
+		'"': '&quot;',
+		"'": '&#39;',
+		'/': '&#x2F;',
+		'`': '&#x60;',
+		'=': '&#x3D;'
+	};
+	
+	const HTML_SPECIAL = /&|\<|\>|\"|\'|\/|`|=/g;
+	
+	/**
+	 * Sets the inner text on each element (special HTML characters are turned into entities).
+	 * @param text the text to set. if not defined, this returns the innerText string.
+	 */
+	$D.extend('text', function(text) {
+		if ($D.isUndefined(text))
+			return this.innerText;
+		else
+			this.innerHTML = text.replace(HTML_SPECIAL, function(m){return ENTITIES[m]});
+	});
+
 })(DOMBlaster);

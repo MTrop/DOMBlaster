@@ -99,7 +99,7 @@
 
 	/**
 	 * Gets/sets an element's data attribute.
-	 * @param attribute (string) the ARIA attribute name.
+	 * @param attribute (string) the DATA attribute name.
 	 * @param value (varies) the value to set, or if not defined, returns the attribute's current value.
 	 * @return (varies)
 	 */

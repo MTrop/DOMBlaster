@@ -86,10 +86,9 @@
 	/************* Extensions ***************/
 
 	/**
-	 * Adds an event to the elements in the selection, or fires the event on
-	 * all of the elements if no provided function.
+	 * Adds an event to the elements in the selection.
 	 * @param eventType (string) the event type ('click', 'keydown', etc.).
-	 * @param func (function) the handler function to add (if not undefined, fire the event).
+	 * @param func (function) the handler function to add.
 	 * @param options (object) event attachment options.
 	 */
 	$D.extend('on', function(eventType, func, options) {
@@ -99,7 +98,7 @@
 	/**
 	 * Removes an event from the elements in the selection.
 	 * @param eventType (string) the event type ('click', 'keydown', etc.).
-	 * @param func (function) the handler function to remove (if not undefined, fire the event).
+	 * @param func (function) the handler function to remove.
 	 * @param options (object) event attachment options.
 	 */
 	$D.extend('off', function(eventType, func, options) {

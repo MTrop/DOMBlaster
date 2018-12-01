@@ -24,21 +24,29 @@
 	/************* Extensions ***************/
 
 	/**
-	 * Adds a 'blur' event to the elements in the selection.
+	 * Adds a 'blur' event to the elements in the selection, or
+	 * if no function provided, will call "blur" on the selection.
 	 * @param func (function) the function to attach.
 	 * @param options (object) event attachment options.
 	 */
 	$D.extend('blur', function(func, options) {
-		$D.addEvent(this, 'blur', func, options);
+		if ($D.isUndefined(func))
+			this.blur();
+		else
+			$D.addEvent(this, 'blur', func, options);
 	});
 
 	/**
-	 * Adds a 'focus' event to the elements in the selection.
+	 * Adds a 'focus' event to the elements in the selection, or
+	 * if no function provided, attempts focus on the selection.
 	 * @param func (function) the function to attach.
 	 * @param options (object) event attachment options.
 	 */
 	$D.extend('focus', function(func, options) {
-		$D.addEvent(this, 'focus', func, options);
+		if ($D.isUndefined(func))
+			this.focus();
+		else
+			$D.addEvent(this, 'focus', func, options);
 	});
 
 	/**
